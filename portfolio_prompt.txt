@@ -4,3 +4,17 @@ if you want the video which i saw, i can upload it for your reference.
 
 
 
+# Make your changes, then:
+git add -A
+git commit -m "your change description"
+git push origin main
+# Both Vercel & Render auto-redeploy! 🚀
+
+
+
+
+URL	Status
+🖥️ Frontend	my-portfolio-dusky-xi-92.vercel.app	✅ Live
+⚙️ Backend	myportfolio-backend-w45n.onrender.com	✅ Live
+🗄️ Database	MongoDB Atlas (portfolio DB)	✅ Connected
+📦 GitHub	github.com/karthik-engili/myPortfolio
