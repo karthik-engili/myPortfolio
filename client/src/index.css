@@ -1,0 +1,294 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ==============================
+   CSS CUSTOM PROPERTIES
+   ============================== */
+:root {
+  /* Dark theme (default) */
+  --bg-primary: #0a0a0a;
+  --bg-secondary: #111122;
+  --bg-tertiary: #1a1a2e;
+  --bg-card: #16213e;
+  --bg-card-hover: #1e2a4a;
+  --accent-red: #e23636;
+  --accent-red-glow: rgba(226, 54, 54, 0.4);
+  --accent-blue: #2146c7;
+  --accent-blue-glow: rgba(33, 70, 199, 0.4);
+  --text-primary: #f5f5f5;
+  --text-secondary: #a0a0b0;
+  --text-muted: #6c6c80;
+  --web-color: rgba(255, 255, 255, 0.08);
+  --web-color-strong: rgba(255, 255, 255, 0.15);
+  --border-color: rgba(255, 255, 255, 0.06);
+  --glass-bg: rgba(17, 17, 34, 0.8);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --shadow-color: rgba(0, 0, 0, 0.4);
+}
+
+.light {
+  --bg-primary: #f8f9fa;
+  --bg-secondary: #ffffff;
+  --bg-tertiary: #f0f0f5;
+  --bg-card: #ffffff;
+  --bg-card-hover: #f5f5fa;
+  --accent-red: #d32f2f;
+  --accent-red-glow: rgba(211, 47, 47, 0.3);
+  --accent-blue: #4361ee;
+  --accent-blue-glow: rgba(67, 97, 238, 0.3);
+  --text-primary: #1a1a2e;
+  --text-secondary: #4a4a5a;
+  --text-muted: #8c8c9a;
+  --web-color: rgba(0, 0, 0, 0.04);
+  --web-color-strong: rgba(0, 0, 0, 0.08);
+  --border-color: rgba(0, 0, 0, 0.08);
+  --glass-bg: rgba(255, 255, 255, 0.85);
+  --glass-border: rgba(0, 0, 0, 0.08);
+  --shadow-color: rgba(0, 0, 0, 0.1);
+}
+
+/* ==============================
+   BASE STYLES
+   ============================== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+  scrollbar-color: var(--accent-red) var(--bg-secondary);
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  overflow-x: hidden;
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--accent-red);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #ff5252;
+}
+
+/* ==============================
+   UTILITY CLASSES
+   ============================== */
+@layer components {
+  .section-container {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28;
+  }
+
+  .section-title {
+    @apply font-heading text-5xl md:text-6xl lg:text-7xl tracking-wider mb-4;
+    color: var(--text-primary);
+  }
+
+  .section-subtitle {
+    @apply font-body text-base md:text-lg max-w-2xl;
+    color: var(--text-secondary);
+  }
+
+  .glass-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    transition: all 0.3s ease;
+  }
+
+  .glass-card:hover {
+    border-color: rgba(226, 54, 54, 0.3);
+    box-shadow: 0 8px 32px var(--accent-red-glow);
+  }
+
+  .gradient-text {
+    background: linear-gradient(135deg, var(--accent-red) 0%, var(--accent-blue) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .gradient-text-reverse {
+    background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-red) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .btn-primary {
+    @apply font-body font-semibold px-8 py-3 rounded-full relative overflow-hidden transition-all duration-300;
+    background: linear-gradient(135deg, var(--accent-red), #b71c1c);
+    color: #ffffff;
+    box-shadow: 0 4px 15px var(--accent-red-glow);
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 25px var(--accent-red-glow);
+  }
+
+  .btn-secondary {
+    @apply font-body font-semibold px-8 py-3 rounded-full relative overflow-hidden transition-all duration-300;
+    background: transparent;
+    color: var(--text-primary);
+    border: 2px solid var(--accent-red);
+  }
+
+  .btn-secondary:hover {
+    background: var(--accent-red);
+    color: #ffffff;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 25px var(--accent-red-glow);
+  }
+
+  .web-divider {
+    position: relative;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent-red), transparent);
+    opacity: 0.3;
+  }
+
+  .tag {
+    @apply font-code text-xs px-3 py-1 rounded-full;
+    background: rgba(226, 54, 54, 0.1);
+    color: var(--accent-red);
+    border: 1px solid rgba(226, 54, 54, 0.2);
+  }
+}
+
+/* ==============================
+   ANIMATIONS
+   ============================== */
+@keyframes webDraw {
+  0% {
+    stroke-dashoffset: 1000;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes spiderDescend {
+  0% {
+    transform: translateY(-100vh);
+    opacity: 0;
+  }
+  30% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+@keyframes glitchText {
+  0%, 100% {
+    transform: translate(0);
+    opacity: 1;
+  }
+  10% {
+    transform: translate(-2px, 2px);
+  }
+  20% {
+    transform: translate(2px, -2px);
+  }
+  30% {
+    transform: translate(-1px, 1px);
+  }
+  40% {
+    transform: translate(1px, -1px);
+  }
+  50% {
+    transform: translate(0);
+  }
+}
+
+@keyframes progressFill {
+  from {
+    width: 0%;
+  }
+  to {
+    width: var(--progress);
+  }
+}
+
+@keyframes pulseRing {
+  0% {
+    transform: scale(0.8);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(2.5);
+    opacity: 0;
+  }
+}
+
+/* Web corner decoration */
+.web-corner::before,
+.web-corner::after {
+  content: '';
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  border-style: solid;
+  border-color: var(--accent-red);
+  opacity: 0.2;
+  transition: opacity 0.3s ease;
+}
+
+.web-corner::before {
+  top: -1px;
+  left: -1px;
+  border-width: 2px 0 0 2px;
+}
+
+.web-corner::after {
+  bottom: -1px;
+  right: -1px;
+  border-width: 0 2px 2px 0;
+}
+
+.web-corner:hover::before,
+.web-corner:hover::after {
+  opacity: 0.6;
+}
+
+/* ==============================
+   RESPONSIVE HELPERS
+   ============================== */
+@media (max-width: 640px) {
+  .section-title {
+    font-size: 2.5rem;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
