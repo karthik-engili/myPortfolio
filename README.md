@@ -1,4 +1,4 @@
-# 🕷️ Spider-Man Portfolio — Full Stack MERN Application
+# Portfolio — Full Stack MERN Application
 
 A **Spider-Man themed** personal portfolio website built with the **MERN stack** (MongoDB, Express, React, Node.js) and **Tailwind CSS v3**.
 
@@ -6,14 +6,14 @@ A **Spider-Man themed** personal portfolio website built with the **MERN stack**
 
 ---
 
-## 🌐 Live URLs
+##  Live URLs
 
 | Service | URL | Platform |
 |---------|-----|----------|
-| 🖥️ **Frontend** | [my-portfolio-dusky-xi-92.vercel.app](https://my-portfolio-dusky-xi-92.vercel.app) | Vercel |
-| ⚙️ **Backend API** | [myportfolio-backend-w45n.onrender.com](https://myportfolio-backend-w45n.onrender.com) | Render |
-| 🗄️ **Database** | MongoDB Atlas (`portfolio` database) | Atlas |
-| 📦 **Source Code** | [github.com/karthik-engili/myPortfolio](https://github.com/karthik-engili/myPortfolio) | GitHub |
+|  **Frontend** | [my-portfolio-dusky-xi-92.vercel.app](https://my-portfolio-dusky-xi-92.vercel.app) | Vercel |
+|  **Backend API** | [myportfolio-backend-w45n.onrender.com](https://myportfolio-backend-w45n.onrender.com) | Render |
+|  **Database** | MongoDB Atlas (`portfolio` database) | Atlas |
+|  **Source Code** | [github.com/karthik-engili/myPortfolio](https://github.com/karthik-engili/myPortfolio) | GitHub |
 
 ---
 
@@ -76,7 +76,7 @@ npm run dev
 
 ---
 
-## 🌍 Deployment
+##  Deployment
 
 ### Frontend → Vercel
 
@@ -103,7 +103,7 @@ git push origin main
 
 ---
 
-## 🧰 Git Commands Used
+##  Git Commands Used
 
 ```bash
 # Initial setup
@@ -122,13 +122,13 @@ git push origin main
 
 ---
 
-## 👨‍💻 Author
+##  Author
 
 **Karthik Engili**
-- 🌐 Portfolio: [my-portfolio-dusky-xi-92.vercel.app](https://my-portfolio-dusky-xi-92.vercel.app)
-- 🐙 GitHub: [@karthik-engili](https://github.com/karthik-engili)
-- 💼 LinkedIn: [Karthik Engili](https://www.linkedin.com/in/karthik-engili-aaa402379/)
-- 🐦 X: [@karthikengili16](https://x.com/karthikengili16)
+-  Portfolio: [my-portfolio-dusky-xi-92.vercel.app](https://my-portfolio-dusky-xi-92.vercel.app)
+-  GitHub: [@karthik-engili](https://github.com/karthik-engili)
+-  LinkedIn: [Karthik Engili](https://www.linkedin.com/in/karthik-engili-aaa402379/)
+-  X: [@karthikengili16](https://x.com/karthikengili16)
 
 ---
 
