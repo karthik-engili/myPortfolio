@@ -1,15 +1,27 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { achievementsData } from '../data/portfolioData';
 
 gsap.registerPlugin(ScrollTrigger);
 
 export default function AchievementsSection() {
   const sectionRef = useRef(null);
+  const [achievementsData, setAchievementsData] = useState([]);
 
   useEffect(() => {
+    const fetchAchievements = async () => {
+      try {
+        const apiUrl = import.meta.env.VITE_API_URL || '';
+        const res = await fetch(`${apiUrl}/api/achievements`).then(r => r.json());
+        if (res.success) setAchievementsData(res.data);
+      } catch {}
+    };
+    fetchAchievements();
+  }, []);
+
+  useEffect(() => {
+    if (achievementsData.length === 0) return;
     const ctx = gsap.context(() => {
       gsap.from('.achieve-header', {
         scrollTrigger: { trigger: sectionRef.current, start: 'top 75%' },
@@ -22,7 +34,9 @@ export default function AchievementsSection() {
       });
     }, sectionRef);
     return () => ctx.revert();
-  }, []);
+  }, [achievementsData]);
+
+  if (achievementsData.length === 0) return null;
 
   return (
     <section id="achievements" ref={sectionRef} className="relative overflow-hidden" style={{ background: 'var(--bg-primary)' }}>
@@ -40,7 +54,7 @@ export default function AchievementsSection() {
           {achievementsData.map((a, i) => {
             const isLeft = i % 2 === 0;
             return (
-              <div key={a.id} className={`timeline-item relative flex items-start mb-12 ${isLeft ? 'md:flex-row' : 'md:flex-row-reverse'}`}>
+              <div key={a._id || a.id} className={`timeline-item relative flex items-start mb-12 ${isLeft ? 'md:flex-row' : 'md:flex-row-reverse'}`}>
                 <div className="absolute left-4 md:left-1/2 w-4 h-4 rounded-full -translate-x-[7px] z-10 mt-6"
                   style={{ background: 'var(--accent-red)', boxShadow: '0 0 12px var(--accent-red-glow)' }} />
                 <div className="hidden md:block md:w-1/2" />

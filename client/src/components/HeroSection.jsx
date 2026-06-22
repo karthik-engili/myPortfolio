@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import gsap from 'gsap';
-import { personalData } from '../data/portfolioData';
 import { FiArrowDown, FiGithub, FiLinkedin, FiTwitter } from 'react-icons/fi';
+
+const iconMap = { FiGithub, FiLinkedin, FiTwitter };
 
 export default function HeroSection() {
   const [roleIndex, setRoleIndex] = useState(0);
@@ -10,10 +11,38 @@ export default function HeroSection() {
   const [isDeleting, setIsDeleting] = useState(false);
   const heroRef = useRef(null);
   const webLinesRef = useRef(null);
+  const [settings, setSettings] = useState(null);
+  const [socialLinks, setSocialLinks] = useState([]);
+
+  // Fetch data from API
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const apiUrl = import.meta.env.VITE_API_URL || '';
+        const [settingsRes, socialRes] = await Promise.all([
+          fetch(`${apiUrl}/api/settings`).then(r => r.json()),
+          fetch(`${apiUrl}/api/social`).then(r => r.json()),
+        ]);
+        if (settingsRes.success) setSettings(settingsRes.data);
+        if (socialRes.success) setSocialLinks(socialRes.data);
+      } catch {
+        // Fallback to defaults if API fails
+        setSettings({
+          firstName: 'Karthik', lastName: 'Engili',
+          roles: ['Full-Stack Developer', 'Problem Solver', 'Tech Explorer'],
+          heroDescription: "I craft immersive web experiences with clean code and creative design.",
+        });
+      }
+    };
+    fetchData();
+  }, []);
+
+  const roles = settings?.roles || ['Full-Stack Developer'];
 
   // Typing effect
   useEffect(() => {
-    const currentRole = personalData.roles[roleIndex];
+    if (!roles.length) return;
+    const currentRole = roles[roleIndex % roles.length];
     let timeout;
 
     if (!isDeleting) {
@@ -31,12 +60,12 @@ export default function HeroSection() {
         }, 40);
       } else {
         setIsDeleting(false);
-        setRoleIndex((prev) => (prev + 1) % personalData.roles.length);
+        setRoleIndex((prev) => (prev + 1) % roles.length);
       }
     }
 
     return () => clearTimeout(timeout);
-  }, [displayText, isDeleting, roleIndex]);
+  }, [displayText, isDeleting, roleIndex, roles]);
 
   // GSAP entrance animation
   useEffect(() => {
@@ -61,7 +90,6 @@ export default function HeroSection() {
       className="absolute top-0 right-0 w-[500px] h-[500px] opacity-[0.06] pointer-events-none hidden lg:block"
       viewBox="0 0 500 500"
     >
-      {/* Radial lines */}
       {Array.from({ length: 12 }).map((_, i) => {
         const angle = (Math.PI * 2 * i) / 12;
         return (
@@ -76,7 +104,6 @@ export default function HeroSection() {
           />
         );
       })}
-      {/* Concentric circles */}
       {[60, 120, 180, 240].map((r, i) => (
         <circle
           key={`c-${i}`}
@@ -90,6 +117,16 @@ export default function HeroSection() {
       ))}
     </svg>
   );
+
+  const getSocialIcon = (link) => {
+    const platform = link.platform?.toLowerCase() || '';
+    if (platform.includes('github')) return FiGithub;
+    if (platform.includes('linkedin')) return FiLinkedin;
+    if (platform.includes('twitter') || platform.includes('x')) return FiTwitter;
+    return FiGithub;
+  };
+
+  if (!settings) return null;
 
   return (
     <section
@@ -132,9 +169,9 @@ export default function HeroSection() {
 
           {/* Name */}
           <h1 className="hero-line font-heading text-6xl sm:text-7xl md:text-8xl lg:text-9xl tracking-wider leading-none mb-2">
-            <span style={{ color: 'var(--text-primary)' }}>{personalData.firstName}</span>
+            <span style={{ color: 'var(--text-primary)' }}>{settings.firstName}</span>
             <br />
-            <span className="gradient-text">{personalData.lastName}</span>
+            <span className="gradient-text">{settings.lastName}</span>
           </h1>
 
           {/* Role with typing effect */}
@@ -168,8 +205,8 @@ export default function HeroSection() {
             className="hero-line font-body text-base md:text-lg max-w-xl leading-relaxed mb-10"
             style={{ color: 'var(--text-secondary)' }}
           >
-            I craft immersive web experiences with clean code and creative design.
-            Let's build something <span style={{ color: 'var(--accent-red)' }}>spectacular</span> together.
+            {settings.heroDescription || "I craft immersive web experiences with clean code and creative design."}
+            {' '}Let's build something <span style={{ color: 'var(--accent-red)' }}>spectacular</span> together.
           </p>
 
           {/* CTA Buttons */}
@@ -184,33 +221,32 @@ export default function HeroSection() {
 
           {/* Social links */}
           <div className="hero-line flex items-center gap-5">
-            {[
-              { icon: FiGithub, href: personalData.social.github, label: 'GitHub' },
-              { icon: FiLinkedin, href: personalData.social.linkedin, label: 'LinkedIn' },
-              { icon: FiTwitter, href: personalData.social.twitter, label: 'Twitter' },
-            ].map(({ icon: Icon, href, label }) => (
-              <a
-                key={label}
-                href={href}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={label}
-                className="p-3 rounded-full transition-all duration-300 group"
-                style={{
-                  border: '1px solid var(--border-color)',
-                  color: 'var(--text-secondary)',
-                }}
-              >
-                <Icon
-                  size={20}
-                  className="transition-all duration-300 group-hover:scale-110"
-                  style={{ color: 'inherit' }}
-                />
-                <style>{`
-                  a:hover { color: var(--accent-red) !important; border-color: var(--accent-red) !important; box-shadow: 0 0 15px var(--accent-red-glow); }
-                `}</style>
-              </a>
-            ))}
+            {socialLinks.map((link) => {
+              const Icon = getSocialIcon(link);
+              return (
+                <a
+                  key={link._id}
+                  href={link.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={link.platform}
+                  className="p-3 rounded-full transition-all duration-300 group"
+                  style={{
+                    border: '1px solid var(--border-color)',
+                    color: 'var(--text-secondary)',
+                  }}
+                >
+                  <Icon
+                    size={20}
+                    className="transition-all duration-300 group-hover:scale-110"
+                    style={{ color: 'inherit' }}
+                  />
+                  <style>{`
+                    a:hover { color: var(--accent-red) !important; border-color: var(--accent-red) !important; box-shadow: 0 0 15px var(--accent-red-glow); }
+                  `}</style>
+                </a>
+              );
+            })}
           </div>
         </div>
       </div>

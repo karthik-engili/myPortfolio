@@ -6,6 +6,10 @@ const projectSchema = new mongoose.Schema({
     required: true,
     trim: true,
   },
+  shortDescription: {
+    type: String,
+    default: '',
+  },
   description: {
     type: String,
     required: true,
@@ -14,13 +18,16 @@ const projectSchema = new mongoose.Schema({
     type: String,
     default: null,
   },
+  images: [{
+    type: String,
+  }],
   techStack: [{
     type: String,
     trim: true,
   }],
   category: {
     type: String,
-    enum: ['Frontend', 'Backend', 'Full-Stack'],
+    enum: ['Frontend', 'Backend', 'Full-Stack', 'Mobile', 'DevOps', 'Other'],
     required: true,
   },
   liveUrl: {
@@ -34,6 +41,15 @@ const projectSchema = new mongoose.Schema({
   featured: {
     type: Boolean,
     default: false,
+  },
+  status: {
+    type: String,
+    enum: ['published', 'draft', 'archived'],
+    default: 'published',
+  },
+  displayOrder: {
+    type: Number,
+    default: 0,
   },
 }, {
   timestamps: true,

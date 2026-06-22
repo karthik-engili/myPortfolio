@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { personalData } from '../data/portfolioData';
 import { FiMapPin, FiMail, FiDownload } from 'react-icons/fi';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -43,6 +42,25 @@ function CountUp({ target, duration = 2, suffix = '' }) {
 
 export default function AboutSection() {
   const sectionRef = useRef(null);
+  const [settings, setSettings] = useState(null);
+
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const apiUrl = import.meta.env.VITE_API_URL || '';
+        const res = await fetch(`${apiUrl}/api/settings`).then(r => r.json());
+        if (res.success) setSettings(res.data);
+      } catch {
+        setSettings({
+          firstName: 'K', lastName: 'E',
+          bio: 'Passionate full-stack developer.',
+          location: 'Hyderabad, India', email: 'email@example.com',
+          resumeUrl: '#', statsProjects: 25, statsExperience: 3, statsClients: 15, statsCommits: 1200,
+        });
+      }
+    };
+    fetchSettings();
+  }, []);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -63,11 +81,13 @@ export default function AboutSection() {
     return () => ctx.revert();
   }, []);
 
+  if (!settings) return null;
+
   const stats = [
-    { label: 'Projects', value: personalData.stats.projects, suffix: '+' },
-    { label: 'Years Exp.', value: personalData.stats.experience, suffix: '+' },
-    { label: 'Happy Clients', value: personalData.stats.clients, suffix: '+' },
-    { label: 'Commits', value: personalData.stats.commits, suffix: '+' },
+    { label: 'Projects', value: settings.statsProjects || 0, suffix: '+' },
+    { label: 'Years Exp.', value: settings.statsExperience || 0, suffix: '+' },
+    { label: 'Happy Clients', value: settings.statsClients || 0, suffix: '+' },
+    { label: 'Commits', value: settings.statsCommits || 0, suffix: '+' },
   ];
 
   return (
@@ -134,21 +154,24 @@ export default function AboutSection() {
                   background: 'var(--bg-card)',
                 }}
               >
-                {/* Placeholder avatar with spider web pattern */}
-                <div className="w-full h-full flex items-center justify-center bg-web-pattern">
-                  <div className="text-center">
-                    <div
-                      className="w-32 h-32 rounded-full mx-auto mb-4 flex items-center justify-center"
-                      style={{
-                        background: 'linear-gradient(135deg, var(--accent-red), var(--accent-blue))',
-                      }}
-                    >
-                      <span className="font-heading text-5xl text-white tracking-wider">
-                        {personalData.firstName[0]}{personalData.lastName[0]}
-                      </span>
+                {settings.profileImage ? (
+                  <img src={settings.profileImage} alt={settings.fullName || 'Profile'} className="w-full h-full object-cover" />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center bg-web-pattern">
+                    <div className="text-center">
+                      <div
+                        className="w-32 h-32 rounded-full mx-auto mb-4 flex items-center justify-center"
+                        style={{
+                          background: 'linear-gradient(135deg, var(--accent-red), var(--accent-blue))',
+                        }}
+                      >
+                        <span className="font-heading text-5xl text-white tracking-wider">
+                          {(settings.firstName || 'K')[0]}{(settings.lastName || 'E')[0]}
+                        </span>
+                      </div>
                     </div>
                   </div>
-                </div>
+                )}
 
                 {/* Corner web decorations */}
                 <div
@@ -177,26 +200,26 @@ export default function AboutSection() {
               className="about-reveal font-body text-base md:text-lg leading-relaxed mb-6"
               style={{ color: 'var(--text-secondary)' }}
             >
-              {personalData.bio}
+              {settings.bio}
             </p>
 
             <div className="about-reveal space-y-3 mb-8">
               <div className="flex items-center gap-3">
                 <FiMapPin size={18} style={{ color: 'var(--accent-red)' }} />
                 <span className="font-body text-sm" style={{ color: 'var(--text-secondary)' }}>
-                  {personalData.location}
+                  {settings.location}
                 </span>
               </div>
               <div className="flex items-center gap-3">
                 <FiMail size={18} style={{ color: 'var(--accent-red)' }} />
                 <span className="font-body text-sm" style={{ color: 'var(--text-secondary)' }}>
-                  {personalData.email}
+                  {settings.email}
                 </span>
               </div>
             </div>
 
             <a
-              href={personalData.resumeUrl}
+              href={settings.resumeUrl || '#'}
               className="about-reveal btn-primary inline-flex items-center gap-2"
             >
               <FiDownload size={18} />
@@ -207,7 +230,7 @@ export default function AboutSection() {
 
         {/* Stats */}
         <div className="about-reveal grid grid-cols-2 md:grid-cols-4 gap-6 mt-20">
-          {stats.map((stat, i) => (
+          {stats.map((stat) => (
             <motion.div
               key={stat.label}
               className="glass-card p-6 text-center relative web-corner"

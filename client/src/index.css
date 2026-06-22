@@ -292,3 +292,22 @@ body {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ==============================
+   ADMIN DASHBOARD STYLES
+   ============================== */
+.admin-nav-item {
+  color: var(--text-secondary);
+  background: transparent;
+}
+
+.admin-nav-item:hover {
+  color: var(--text-primary);
+  background: var(--bg-card);
+}
+
+.admin-nav-active {
+  color: #ffffff !important;
+  background: linear-gradient(135deg, var(--accent-red), #b71c1c) !important;
+  box-shadow: 0 4px 15px var(--accent-red-glow);
+}

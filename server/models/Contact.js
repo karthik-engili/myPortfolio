@@ -26,6 +26,10 @@ const contactSchema = new mongoose.Schema({
     trim: true,
     maxlength: 5000,
   },
+  isRead: {
+    type: Boolean,
+    default: false,
+  },
 }, {
   timestamps: true,
 });

@@ -1,0 +1,8 @@
+git checkout -b dev ,  (to switch from one branch to another )
+
+water fall model
+SDLC process important
+use case diagram -> waterfall diagram
+Infosys certification
+
+docker and kubinities

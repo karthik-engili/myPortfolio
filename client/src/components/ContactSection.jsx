@@ -2,7 +2,6 @@ import { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { personalData } from '../data/portfolioData';
 import { FiSend, FiMapPin, FiMail, FiPhone, FiGithub, FiLinkedin, FiTwitter } from 'react-icons/fi';
 import { toast } from 'react-toastify';
 
@@ -13,6 +12,25 @@ export default function ContactSection() {
   const [formData, setFormData] = useState({ name: '', email: '', subject: '', message: '' });
   const [sending, setSending] = useState(false);
   const [errors, setErrors] = useState({});
+  const [settings, setSettings] = useState(null);
+  const [socialLinks, setSocialLinks] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const apiUrl = import.meta.env.VITE_API_URL || '';
+        const [sRes, soRes] = await Promise.all([
+          fetch(`${apiUrl}/api/settings`).then(r => r.json()),
+          fetch(`${apiUrl}/api/social`).then(r => r.json()),
+        ]);
+        if (sRes.success) setSettings(sRes.data);
+        if (soRes.success) setSocialLinks(soRes.data);
+      } catch {
+        setSettings({ location: 'Hyderabad, India', email: 'email@example.com', phone: '+91 0000000000' });
+      }
+    };
+    fetchData();
+  }, []);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -63,17 +81,19 @@ export default function ContactSection() {
     if (errors[e.target.name]) setErrors({ ...errors, [e.target.name]: '' });
   };
 
-  const contactInfo = [
-    { icon: FiMapPin, label: 'Location', value: personalData.location },
-    { icon: FiMail, label: 'Email', value: personalData.email },
-    { icon: FiPhone, label: 'Phone', value: personalData.phone },
-  ];
+  const getSocialIcon = (link) => {
+    const p = link.platform?.toLowerCase() || '';
+    if (p.includes('github')) return FiGithub;
+    if (p.includes('linkedin')) return FiLinkedin;
+    if (p.includes('twitter') || p.includes('x')) return FiTwitter;
+    return FiGithub;
+  };
 
-  const socialLinks = [
-    { icon: FiGithub, href: personalData.social.github, label: 'GitHub' },
-    { icon: FiLinkedin, href: personalData.social.linkedin, label: 'LinkedIn' },
-    { icon: FiTwitter, href: personalData.social.twitter, label: 'Twitter' },
-  ];
+  const contactInfo = settings ? [
+    { icon: FiMapPin, label: 'Location', value: settings.location },
+    { icon: FiMail, label: 'Email', value: settings.email },
+    { icon: FiPhone, label: 'Phone', value: settings.phone },
+  ] : [];
 
   const inputStyle = {
     background: 'var(--bg-card)',
@@ -122,15 +142,18 @@ export default function ContactSection() {
                 Follow me
               </h4>
               <div className="flex gap-3">
-                {socialLinks.map(({ icon: Icon, href, label }) => (
-                  <a key={label} href={href} target="_blank" rel="noopener noreferrer"
-                    className="w-11 h-11 rounded-xl flex items-center justify-center transition-all duration-300 hover:scale-110"
-                    style={{ background: 'var(--bg-card)', border: '1px solid var(--border-color)', color: 'var(--text-secondary)' }}
-                    onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'var(--accent-red)'; e.currentTarget.style.color = 'var(--accent-red)'; }}
-                    onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'var(--border-color)'; e.currentTarget.style.color = 'var(--text-secondary)'; }}>
-                    <Icon size={18} />
-                  </a>
-                ))}
+                {socialLinks.map((link) => {
+                  const Icon = getSocialIcon(link);
+                  return (
+                    <a key={link._id} href={link.url} target="_blank" rel="noopener noreferrer"
+                      className="w-11 h-11 rounded-xl flex items-center justify-center transition-all duration-300 hover:scale-110"
+                      style={{ background: 'var(--bg-card)', border: '1px solid var(--border-color)', color: 'var(--text-secondary)' }}
+                      onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'var(--accent-red)'; e.currentTarget.style.color = 'var(--accent-red)'; }}
+                      onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'var(--border-color)'; e.currentTarget.style.color = 'var(--text-secondary)'; }}>
+                      <Icon size={18} />
+                    </a>
+                  );
+                })}
               </div>
             </div>
           </div>

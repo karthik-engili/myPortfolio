@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { skillsData } from '../data/portfolioData';
 import {
   SiReact, SiJavascript, SiHtml5, SiCss, SiTailwindcss, SiNextdotjs,
   SiNodedotjs, SiExpress, SiMongodb, SiPython, SiPostman, SiFirebase,
@@ -99,6 +98,25 @@ function SkillBar({ name, level, icon, delay }) {
 export default function SkillsSection() {
   const sectionRef = useRef(null);
   const [activeCategory, setActiveCategory] = useState(0);
+  const [skillsData, setSkillsData] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchSkills = async () => {
+      try {
+        const apiUrl = import.meta.env.VITE_API_URL || '';
+        const res = await fetch(`${apiUrl}/api/skills`).then(r => r.json());
+        if (res.success && res.data.length > 0) {
+          setSkillsData(res.data);
+        }
+      } catch {
+        // Will show empty state
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchSkills();
+  }, []);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -117,6 +135,8 @@ export default function SkillsSection() {
 
     return () => ctx.revert();
   }, []);
+
+  if (loading || skillsData.length === 0) return null;
 
   return (
     <section
@@ -171,8 +191,8 @@ export default function SkillsSection() {
           transition={{ duration: 0.4 }}
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
         >
-          {skillsData[activeCategory].skills.map((skill, i) => (
-            <SkillBar key={skill.name} {...skill} delay={i} />
+          {skillsData[activeCategory]?.skills?.map((skill, i) => (
+            <SkillBar key={skill.name || skill._id} {...skill} delay={i} />
           ))}
         </motion.div>
       </div>
