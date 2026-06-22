@@ -19,6 +19,7 @@ export function AuthProvider({ children }) {
         setAdmin(res.data.data);
       }
     } catch {
+      localStorage.removeItem('admin_token');
       setAdmin(null);
     } finally {
       setLoading(false);
@@ -28,6 +29,9 @@ export function AuthProvider({ children }) {
   const login = async (username, password) => {
     const res = await api.post('/auth/login', { username, password });
     if (res.data.success) {
+      if (res.data.token) {
+        localStorage.setItem('admin_token', res.data.token);
+      }
       setAdmin(res.data.data);
     }
     return res.data;
@@ -39,6 +43,7 @@ export function AuthProvider({ children }) {
     } catch {
       // proceed with logout even if API fails
     }
+    localStorage.removeItem('admin_token');
     setAdmin(null);
   };
 

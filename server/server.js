@@ -18,6 +18,8 @@ import achievementRoutes from './routes/achievementRoutes.js';
 import socialRoutes from './routes/socialRoutes.js';
 import settingRoutes from './routes/settingRoutes.js';
 import adminRoutes from './routes/adminRoutes.js';
+import Admin from './models/Admin.js';
+import Setting from './models/Setting.js';
 
 dotenv.config();
 
@@ -48,7 +50,9 @@ const allowedOrigins = [
   'http://localhost:3000',
 ];
 if (process.env.CLIENT_URL) {
-  allowedOrigins.push(process.env.CLIENT_URL);
+  // Remove trailing slash if present to avoid CORS mismatches
+  const sanitizedClientUrl = process.env.CLIENT_URL.replace(/\/$/, '');
+  allowedOrigins.push(sanitizedClientUrl);
 }
 app.use(cors({
   origin: allowedOrigins,
@@ -92,6 +96,34 @@ const startServer = async () => {
     if (process.env.MONGO_URI) {
       await mongoose.connect(process.env.MONGO_URI);
       console.log('✅ MongoDB connected');
+
+      // Auto-seed Admin if database is empty
+      const adminCount = await Admin.countDocuments();
+      if (adminCount === 0) {
+        await Admin.create({
+          username: process.env.ADMIN_USERNAME || 'admin',
+          email: process.env.ADMIN_EMAIL || 'admin@portfolio.com',
+          password: process.env.ADMIN_PASSWORD || 'Admin@123',
+          role: 'superadmin',
+        });
+        console.log('✅ Auto-seeded default admin user');
+      }
+
+      // Auto-seed Setting if empty
+      const settingCount = await Setting.countDocuments();
+      if (settingCount === 0) {
+        await Setting.create({
+          fullName: 'Karthik Engili', firstName: 'Karthik', lastName: 'Engili',
+          professionalTitle: 'Full-Stack Developer & Tech Explorer',
+          roles: ['Full-Stack Developer', 'Problem Solver', 'Tech Explorer'],
+          bio: `Passionate full-stack developer with a knack for building immersive web experiences. I specialize in crafting pixel-perfect frontends and robust backends that bring ideas to life. With a strong foundation in the MERN stack and a love for clean code, I transform complex problems into elegant, user-friendly solutions.`,
+          email: 'engilikarthik@gmail.com', phone: '+91 7780666025',
+          location: 'Hyderabad, Telangana, India',
+          heroDescription: "I craft immersive web experiences with clean code and creative design. Let's build something spectacular together.",
+          statsProjects: 25, statsExperience: 3, statsClients: 15, statsCommits: 1200,
+        });
+        console.log('✅ Auto-seeded default settings');
+      }
     } else {
       console.warn('⚠️  MONGO_URI not set — running without database');
     }

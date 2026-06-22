@@ -8,6 +8,20 @@ const api = axios.create({
   headers: { 'Content-Type': 'application/json' },
 });
 
+// Request interceptor to attach JWT token from localStorage
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('admin_token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
 // Response interceptor for auth errors
 api.interceptors.response.use(
   (response) => response,
